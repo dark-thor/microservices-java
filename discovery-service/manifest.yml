@@ -1,0 +1,12 @@
+---
+applications:
+- name: discovery-service
+  memory: 512M
+  instances: 1
+  host: discovery-service-${random-word}
+  path: build/libs/discovery-service-1.0-SNAPSHOT.jar
+  env:
+    SPRING_PROFILES_ACTIVE: docker
+    DEBUG: "true"
+    debug: "true"
+
