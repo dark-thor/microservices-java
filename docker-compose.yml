@@ -1,0 +1,76 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:5.7.12
+    ports:
+    - 127.0.0.1:3360:3306
+    container_name: microservices-java-mysql
+    environment:
+    - MYSQL_ROOT_PASSWORD=Mywebstore
+    - MYSQL_DATABASE=WebStore
+    - MYSQL_USER=ws_rw
+    - MYSQL_PASSWORD=WebstoreRW
+    volumes:
+    - mysql-db:/var/lib/mysql
+
+  rabbitmq:
+    image: rabbitmq:3.6
+    restart: always
+    ports:
+    - "5672:5672"
+    - "15672:15672"
+
+  turbine:
+    image: com.ecommerce.store/turbine:1.0-SNAPSHOT
+    restart: always
+    ports:
+    - 8400:8400
+    links:
+    - rabbitmq
+    - discovery-service
+    environment:
+    - SPRING_PROFILES_ACTIVE=docker
+    - DOCKER_IP=$DOCKER_IP
+
+  discovery-service:
+    image: com.ecommerce.microservices/discovery-service:1.0-SNAPSHOT
+    ports:
+    - 8761:8761
+    environment:
+    - SPRING_PROFILES_ACTIVE=docker
+    - DOCKER_IP=$DOCKER_IP
+  edge-service:
+    image: com.ecommerce.store/edge-service:1.0-SNAPSHOT
+    ports:
+    - 9999:9999
+    links:
+    - discovery-service
+    - rabbitmq
+    environment:
+    - SPRING_PROFILES_ACTIVE=docker
+    - DOCKER_IP=$DOCKER_IP
+  address-service:
+    image: com.ecommerce.store/address-service:1.0-SNAPSHOT
+    ports:
+    - 9200:9200
+    links:
+    - discovery-service
+    - edge-service
+    - mysql
+    environment:
+    - SPRING_PROFILES_ACTIVE=docker
+    - DOCKER_IP=$DOCKER_IP
+  hystrix:
+    image: com.ecommerce.store/hystrix-dashboard:1.0-SNAPSHOT
+    ports:
+    - 8300:8300
+    environment:
+    - SPRING_PROFILES_ACTIVE=docker
+    - DOCKER_IP=$DOCKER_IP
+    links:
+    - discovery-service
+    - edge-service
+    - address-service
+
+volumes:
+  mysql-db:
