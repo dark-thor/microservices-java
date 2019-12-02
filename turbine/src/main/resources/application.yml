@@ -1,0 +1,61 @@
+spring:
+  profiles:
+    active: docker
+---
+spring:
+  profiles: docker
+
+info:
+  component: Turbine
+
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+
+spring.rabbitmq:
+  host: rabbitmq
+  port: 5672
+
+server:
+  port: 8400
+
+management:
+  port: 8990
+
+turbine:
+  instanceUrlSuffix.USER-SERVICE: /uaa/hystrix.stream
+  appConfig: web-service,user-service,address-service,edge-service
+  aggregator:
+    clusterConfig: WEB-SERVICE,USER-SERVICE,ADDRESS-SERVICE,EDGE-SERVICE
+
+eureka:
+  instance:
+    hostname: turbine
+    prefer-ip-address: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl.defaultZone: http://discovery-service:8761/eureka/
+
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 60000
+---
+spring:
+  profiles: test
+
+server:
+  port: 8400
+
+management:
+  port: 8990
+
+spring.rabbitmq:
+  host: localhost
+  port: 5672
+
+eureka:
+  client:
+    enabled: false
