@@ -1,0 +1,57 @@
+spring:
+  profiles:
+    active: docker
+---
+spring:
+  profiles: docker
+
+info:
+  component: Zuul Server
+
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
+
+zuul:
+  ignored-services: '*'
+  ignoredPatterns: /**/api/**
+  routes:
+    address-service: /a/**
+
+server:
+  port: 9999
+
+spring.rabbitmq:
+  host: rabbitmq
+  port: 5672
+
+eureka:
+  server:
+    enabled: true
+  instance:
+    hostname: edge-service
+    prefer-ip-address: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl.defaultZone: http://discovery-service:8761/eureka/
+
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
+
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 60000
+---
+spring:
+  profiles: test
+
+server:
+  port: 9999
+
+eureka:
+  client:
+    enabled: false
