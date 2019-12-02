@@ -1,0 +1,15 @@
+---
+applications:
+- name: address-service
+  memory: 512M
+  instances: 1
+  host: address-service-${random-word}
+  path: build/libs/address-service-1.0-SNAPSHOT.jar
+  env:
+    SPRING_PROFILES_ACTIVE: docker
+    DEBUG: "true"
+    debug: "true"
+  services:
+   - discovery-service
+
+

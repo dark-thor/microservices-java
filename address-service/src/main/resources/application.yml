@@ -1,0 +1,104 @@
+spring:
+  application:
+    name: address-service
+---
+spring:
+  profiles:
+    active: docker
+---
+spring:
+  profiles: docker
+
+server:
+  port: 9200
+
+jdbc:
+  driverClassName: com.mysql.jdbc.Driver
+  url: jdbc:mysql://mysql:3306/WebStore
+  username: root
+  password: Mywebstore
+
+hibernate:
+  dialect: org.hibernate.dialect.MySQLDialect
+  show_sql: true
+  format_sql: true
+
+spring.datasource:
+  driverClassName: com.mysql.jdbc.Driver
+  url: jdbc:mysql://mysql:3306/WebStore
+  username: root
+  password: Mywebstore
+
+spring.jpa:
+  show-sql: true
+  hibernate:
+    dialect: org.hibernate.dialect.MySQLInnoDBDialect
+    naming_strategy: org.hibernate.cfg.EJB3NamingStrategy
+#    ddl-auto: update
+  properties:
+    hibernate:
+      current_session_context_class: org.springframework.orm.hibernate4.SpringSessionContext
+#    javax.persistence.sharedCache.mode: ENABLE_SELECTIVE
+
+entitymanager:
+  packagesToScan: com.ecommerce.store
+
+eureka:
+  server:
+    enabled: true
+  instance:
+    hostname: address-service
+    prefer-ip-address: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl.defaultZone: http://discovery-service:8761/eureka/
+
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
+
+---
+spring:
+  profiles: test
+
+server:
+  port: 9200
+
+jdbc:
+  driverClassName: com.mysql.jdbc.Driver
+  url: jdbc:mysql://localhost:3360/WebStore
+  username: ws_rw
+  password: WebstoreRW
+
+hibernate:
+  dialect: org.hibernate.dialect.MySQLDialect
+  show_sql: true
+  format_sql: true
+
+spring.datasource:
+  driverClassName: com.mysql.jdbc.Driver
+  url: jdbc:mysql://localhost:3360/WebStore
+  username: ws_rw
+  password: WebstoreRW
+
+spring.jpa:
+  show-sql: true
+  hibernate:
+    dialect: org.hibernate.dialect.MySQLInnoDBDialect
+    naming_strategy: org.hibernate.cfg.EJB3NamingStrategy
+#    ddl-auto: update
+  properties:
+    hibernate:
+      current_session_context_class: org.springframework.orm.hibernate4.SpringSessionContext
+
+entitymanager:
+  packagesToScan: com.ecommerce.store
+
+eureka:
+  client:
+    enabled: false
+
+ribbon:
+  eureka:
+   enabled: false
+
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 60000
