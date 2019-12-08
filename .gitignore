@@ -20,10 +20,4 @@ gradle-app.setting
 ## backup file
 *.gradle~
 
-gradle/
-
-gradlew
-
-gradlew.bat
-
 out/
